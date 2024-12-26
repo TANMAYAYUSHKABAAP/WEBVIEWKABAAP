@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction & Betting Dashboard</title>
+    <style>
+        /* General styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #232526, #414345);
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            display: none; /* Hidden by default, shown only in prediction mode */
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #00e676;
+            text-shadow: 0 0 20px rgba(0, 230, 118, 0.7);
+        }
+
+        .box {
+            margin: 15px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+
+        .box:hover {
+            transform: scale(1.05);
+        }
+
+        .box h2 {
+            font-size: 1.5em;
+            color: #ffcc00;
+        }
+
+        .box span {
+            font-size: 2em;
+            font-weight: bold;
+            color: #00e676;
+        }
+
+        /* Navigation bar styles */
+        .navigation {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .nav-item {
+            text-align: center;
+        }
+
+        .nav-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .nav-item span {
+            margin-top: 5px;
+            display: block;
+            color: #00e676;
+            font-weight: bold;
+        }
+
+        /* WebView styles */
+        .webview {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 100;
+        }
+
+        .webview iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .webview-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff0000;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            z-index: 101;
+        }
+
+        .prediction-button {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #00e676;
+            color: #fff;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            z-index: 101;
+            box-shadow: 0 4px 30px rgba(0, 230, 118, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="prediction">
+        <div class="header">
+            <h1>TEAM GODPREDICTION </h1>
+        </div>
+        <div class="box">
+            <h2>Current Period</h2>
+            <span id="periodNumber">Loading...</span>
+        </div>
+        <div class="box">
+            <h2>Present Result</h2>
+            <span id="currentResult">Waiting...</span>
+        </div>
+    </div>
+
+    <div class="webview" id="webview">
+        <button class="webview-button" id="webviewButton">✕</button>
+        <iframe id="webviewFrame"></iframe>
+    </div>
+
+    <button class="prediction-button" id="predictionButton">Prediction</button>
+
+    <div class="navigation">
+        <div class="nav-item" onclick="openWebView('https://91123.in')">
+            <img src="images/91club.png" alt="91Club">
+            <span>91Club</span>
+        </div>
+        <div class="nav-item" onclick="openWebView('https://goagame.com')">
+            <img src="images/goagame.png" alt="Goa Game">
+            <span>Goa Game</span>
+        </div>
+        <div class="nav-item" onclick="openWebView('https://bdg.com')">
+            <img src="images/bdg.png" alt="BDG">
+            <span>BDG</span>
+        </div>
+        <div class="nav-item" onclick="openWebView('https://sikkimgame.com')">
+            <img src="images/sikkim.png" alt="Sikkim">
+            <span>Sikkim</span>
+        </div>
+        <div class="nav-item" onclick="openWebView('https://dmwin.com')">
+            <img src="images/dmwin.png" alt="DM Win">
+            <span>DM Win</span>
+        </div>
+    </div>
+
+<script>
+    const predictionContainer = document.getElementById('prediction');
+    const webview = document.getElementById('webview');
+    const webviewFrame = document.getElementById('webviewFrame');
+    const webviewButton = document.getElementById('webviewButton');
+    const predictionButton = document.getElementById('predictionButton');
+
+    // Open WebView
+    function openWebView(url) {
+        webview.style.display = 'block';
+        webviewFrame.src = url;
+    }
+
+    // Cross button single click: Exit WebView
+    webviewButton.addEventListener('click', () => {
+        webview.style.display = 'none';
+        webviewFrame.src = '';
+    });
+
+    // Show prediction for 3 seconds
+    predictionButton.addEventListener('click', () => {
+        webview.style.display = 'none';
+        predictionContainer.style.display = 'block';
+
+        setTimeout(() => {
+            predictionContainer.style.display = 'none';
+            webview.style.display = 'block';
+        }, 3000);
+    });
+
+    // Prediction updates
+    const results = ['BIG', 'SMALL', 'RED', 'GREEN'];
+    const periodNumberElement = document.getElementById('periodNumber');
+    const currentResultElement = document.getElementById('currentResult');
+    let lastDisplayedPeriod = -1;
+    let lastResult = null;
+
+    function getRandomResult() {
+        return results[Math.floor(Math.random() * results.length)];
+    }
+
+    function updatePeriodAndResult() {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        const seconds = now.getSeconds();
+
+        // Define start time (5:30 AM)
+        const startHour = 5;
+        const startMinute = 30;
+
+        // Calculate elapsed time in seconds
+        const elapsedSeconds = ((currentHour * 3600 + currentMinute * 60 + seconds) - (startHour * 3600 + startMinute * 60));
+        const totalPeriods = Math.max(0, Math.floor(elapsedSeconds / 30));
+
+        // Calculate upcoming period (total period + 1)
+        const upcomingPeriod = totalPeriods + 1;
+
+        // Format period number
+        const periodNumber = '100005' + String(upcomingPeriod).padStart(4, '0');
+        periodNumberElement.textContent = periodNumber;
+
+        // If the period has changed, assign a new random result
+        if (upcomingPeriod !== lastDisplayedPeriod) {
+            lastDisplayedPeriod = upcomingPeriod;
+            lastResult = getRandomResult();  // Get a new random result
+            currentResultElement.textContent = lastResult;
+        }
+    }
+
+    // Update period and result every second
+    setInterval(updatePeriodAndResult, 1000);
+</script>
+</body>
+</html>
